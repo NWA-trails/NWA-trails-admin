@@ -1,0 +1,9 @@
+<div>
+   <h2>Select Table</h2>
+<select [(ngModel)]="selectedTable" (click)="chooseTable()">
+<option *ngFor="let table of tableOptions" [value]="table">{{table}}</option>
+</select>
+</div>
+
+  <h1>{{selectedTable}}</h1>
+<ng2-smart-table [settings]="settings" [source]="data"></ng2-smart-table>
