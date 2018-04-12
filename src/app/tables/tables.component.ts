@@ -18,6 +18,7 @@ export class TablesComponent implements OnInit {
   tableOptions = ["Trail Condition Reports", "Users"];
   selectedTable = 'Users';
 
+
   constructor(public http : HttpClient) {
   }
 
@@ -46,8 +47,41 @@ export class TablesComponent implements OnInit {
     }
   }
 
+  onEditConfirm(event) {
+    if (window.confirm('Are you sure you want to edit?')) {
+      event.newData['active'] = this.yesOrNoToBoolean(event.newData['active']) ;
+      event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
+      event.confirm.resolve(event.newData);
+      this.updateActivationAndAcknowledgment(event.newData);
+    } else {
+      event.confirm.reject();
+    }
+  }
+
+  updateActivationAndAcknowledgment(record)
+  {
+    console.log(ConstantsModule.conditonURL + "/markInactiveById/" + record.id);
+    if(record.active == true)
+      this.http.put(ConstantsModule.conditonURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
+         console.log(JSON.stringify(res));
+       });
+    else
+      this.http.put(ConstantsModule.conditonURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
+         console.log(JSON.stringify(res));
+       });
+
+    if(record.acknowledged == true)
+      this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {});
+    else
+      this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {});
+
+  }
+
   buildConditionTable(data)
   {
+    console.log(data);
+      this.data = data;
+
     this.settings = {
   columns: {
     id: {
@@ -74,20 +108,62 @@ export class TablesComponent implements OnInit {
       title: 'Lng Position',
       editable: false
     },
+
     active: {
+      valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
       title: 'Is report active?',
-      editable: false
+      editable: true,
+      editor: {
+        type: 'checkbox',
+        config: {
+          true: 'Yes',
+          false: 'No'
+        }
+      },
+
     },
+    acknowledged: {
+      valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
+      title: 'Acknowledged by the City?',
+      editable: true,
+      editor: {
+        type: 'checkbox',
+        config: {
+          true: 'Yes',
+          false: 'No'
+        }
+      },
+
+    },
+
   },
   actions: {
     columnTitle: "",
     add: false,
-    edit: false
-  }
-};
+    edit: true
+  },
+  edit:{
+    confirmSave: true,
+    mode: 'inline'
 
-this.data = data;
   }
+
+ };
+
+}
+
+booleanToYesOrNo(val)
+{
+  return (val===true || val == 'Yes') ? 'Yes' : 'No';
+}
+
+yesOrNoToBoolean(val)
+{
+  return (val=='Yes' || val ===true) ? true : false;
+}
+
+
+
 
   buildUserTable(data)
   {
