@@ -2,6 +2,7 @@ import { Component, OnInit } from '@angular/core';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ConstantsModule } from '../constants.module';
 import { HttpClient } from '@angular/common/http';
+import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
 
 
 import * as _ from 'underscore';
@@ -19,7 +20,11 @@ export class TablesComponent implements OnInit {
   selectedTable = 'Users';
 
 
-  constructor(public http : HttpClient) {
+  constructor(public http : HttpClient, private domSanitizer: DomSanitizer) {
+  }
+
+  transform(html: string): SafeHtml {
+     return this.domSanitizer.bypassSecurityTrustHtml(html);
   }
 
   ngOnInit() {
@@ -81,6 +86,10 @@ export class TablesComponent implements OnInit {
   {
     console.log(data);
       this.data = data;
+      for(var i = 0; i < data.length; i++)
+      {
+        this.data[i].image =this.transform("<a  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
+      }
 
     this.settings = {
   columns: {
@@ -108,6 +117,11 @@ export class TablesComponent implements OnInit {
       title: 'Lng Position',
       editable: false
     },
+    image: {
+      title: "Image",
+      editable: false,
+      type: 'html'
+    },
 
     active: {
       valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
@@ -120,7 +134,17 @@ export class TablesComponent implements OnInit {
           false: 'No'
         }
       },
+      filter: {
+       type: 'list',
+       config: {
+         selectText: 'Select...',
+         list: [
+           { value: true, title: 'Yes' },
+           { value: false, title: 'No' }
+         ],
+       },
 
+    },
     },
     acknowledged: {
       valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
@@ -133,6 +157,17 @@ export class TablesComponent implements OnInit {
           false: 'No'
         }
       },
+      filter: {
+       type: 'list',
+       config: {
+         selectText: 'Select...',
+         list: [
+           { value: true, title: 'Yes' },
+           { value: false, title: 'No' }
+         ],
+       },
+
+    },
 
     },
 
@@ -150,6 +185,10 @@ export class TablesComponent implements OnInit {
 
  };
 
+}
+f()
+{
+  console.log("clicked");
 }
 
 booleanToYesOrNo(val)
