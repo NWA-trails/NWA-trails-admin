@@ -82,13 +82,14 @@ export class TablesComponent implements OnInit {
 
   }
 
+
   buildConditionTable(data)
   {
     console.log(data);
       this.data = data;
       for(var i = 0; i < data.length; i++)
       {
-        this.data[i].image =this.transform("<a  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
+        this.data[i].image =this.transform("<a id=\"this.data[i].id\"  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
       }
 
     this.settings = {
@@ -104,6 +105,10 @@ export class TablesComponent implements OnInit {
     timestamp: {
       title: 'Time Reported',
       editable: false
+    },
+    trail: {
+      title: 'Trail',
+      editable:false
     },
     description: {
       title: 'Description',
