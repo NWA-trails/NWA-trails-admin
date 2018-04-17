@@ -45,13 +45,13 @@ export class TablesComponent implements OnInit {
     {
       this.http.get(ConstantsModule.conditonURL + "/getActive").subscribe( res => {
          console.log(_.keys(res[0]));
-         this.buildReportsTable(res);
+         this.buildConditionsTable(res);
        });
     }
     else if(this.selectedTable == "Points of Interest")
     {
       this.http.get(ConstantsModule.poiURL + "/getActive").subscribe( res => {
-         this.buildReportsTable(res);
+         this.buildPOITable(res);
        });
     }
   }
@@ -59,35 +59,55 @@ export class TablesComponent implements OnInit {
   onEditConfirm(event) {
     if (window.confirm('Are you sure you want to edit?')) {
       event.newData['active'] = this.yesOrNoToBoolean(event.newData['active']) ;
-      event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
+
+      //event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
+      event.newData['approved'] = this.yesOrNoToBoolean(event.newData['approved']) ;
       event.confirm.resolve(event.newData);
-      this.updateActivationAndAcknowledgment(event.newData);
+      this.update(event.newData);
     } else {
       event.confirm.reject();
     }
   }
 
-  updateActivationAndAcknowledgment(record)
+  update(record)
   {
-    console.log(ConstantsModule.conditonURL + "/markInactiveById/" + record.id);
-    if(record.active == true)
-      this.http.put(ConstantsModule.conditonURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
-         console.log(JSON.stringify(res));
-       });
-    else
-      this.http.put(ConstantsModule.conditonURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
-         console.log(JSON.stringify(res));
-       });
+    if(this.selectedTable == "Trail Condition Reports")
+    {
+      if(record.active == true)
+        this.http.put(ConstantsModule.conditonURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
+           console.log(JSON.stringify(res));
+         });
+      else
+        this.http.put(ConstantsModule.conditonURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
+           console.log(JSON.stringify(res));
+         });
 
-    if(record.acknowledged == true)
-      this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {});
-    else
-      this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {});
+      if(record.acknowledged == true)
+        this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {});
+      else
+        this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {});
+    }
+    else if(this.selectedTable == "Points of Interest")
+    {
+      console.log(record);
+      if(record.active == true)
+        this.http.put(ConstantsModule.poiURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
+           console.log(JSON.stringify(res));
+         });
+      else
+        this.http.put(ConstantsModule.poiURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
+           console.log(JSON.stringify(res));
+         });
 
+      if(record.approved == true)
+        this.http.put(ConstantsModule.poiURL + "/markApprovedById/" + record.id, {} ).subscribe( res => {});
+      else
+        this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {});
+    }
   }
 
 
-  buildReportsTable(data)
+  buildConditionsTable(data)
   {
 
       this.data = data;
@@ -196,6 +216,114 @@ export class TablesComponent implements OnInit {
 
 }
 
+buildPOITable(data)
+{
+
+    this.data = data;
+    for(var i = 0; i < data.length; i++)
+    {
+      this.data[i].image =this.transform("<a id=\"this.data[i].id\"  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
+    }
+
+  this.settings = {
+columns: {
+  id: {
+    title: 'ID',
+    editable: false
+  },
+  username: {
+    title: 'User Name',
+    editable: false
+  },
+  timestamp: {
+    title: 'Time Reported',
+    editable: false
+  },
+  trail: {
+    title: 'Trail',
+    editable:false
+  },
+  description: {
+    title: 'Description',
+    editable: false
+  },
+  lat: {
+    title: 'Lat Position',
+    editable: false
+  },
+  lng: {
+    title: 'Lng Position',
+    editable: false
+  },
+  image: {
+    title: "Image",
+    editable: false,
+    type: 'html'
+  },
+
+  active: {
+    valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
+    title: 'Is report active?',
+    editable: true,
+    editor: {
+      type: 'checkbox',
+      config: {
+        true: 'Yes',
+        false: 'No'
+      }
+    },
+    filter: {
+     type: 'list',
+     config: {
+       selectText: 'Select...',
+       list: [
+         { value: true, title: 'Yes' },
+         { value: false, title: 'No' }
+       ],
+     },
+
+  },
+  },
+  approved: {
+    valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
+    title: 'Approved for display?',
+    editable: true,
+    editor: {
+      type: 'checkbox',
+      config: {
+        true: 'Yes',
+        false: 'No'
+      }
+    },
+    filter: {
+     type: 'list',
+     config: {
+       selectText: 'Select...',
+       list: [
+         { value: true, title: 'Yes' },
+         { value: false, title: 'No' }
+       ],
+     },
+
+  },
+
+  },
+
+},
+actions: {
+  columnTitle: "",
+  add: false,
+  edit: true
+},
+edit:{
+  confirmSave: true,
+  mode: 'inline'
+
+}
+
+};
+
+}
 
 booleanToYesOrNo(val)
 {
