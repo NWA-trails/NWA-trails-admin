@@ -16,7 +16,7 @@ export class TablesComponent implements OnInit {
   settings;
   data;
   name: string;
-  tableOptions = ["Trail Condition Reports", "Users"];
+  tableOptions = ["Trail Condition Reports", "Users", "Points of Interest"];
   selectedTable = 'Users';
 
 
@@ -45,9 +45,13 @@ export class TablesComponent implements OnInit {
     {
       this.http.get(ConstantsModule.conditonURL + "/getActive").subscribe( res => {
          console.log(_.keys(res[0]));
-         this.buildConditionTable(res);
-
-
+         this.buildReportsTable(res);
+       });
+    }
+    else if(this.selectedTable == "Points of Interest")
+    {
+      this.http.get(ConstantsModule.poiURL + "/getActive").subscribe( res => {
+         this.buildReportsTable(res);
        });
     }
   }
@@ -83,9 +87,9 @@ export class TablesComponent implements OnInit {
   }
 
 
-  buildConditionTable(data)
+  buildReportsTable(data)
   {
-    console.log(data);
+
       this.data = data;
       for(var i = 0; i < data.length; i++)
       {
@@ -191,10 +195,7 @@ export class TablesComponent implements OnInit {
  };
 
 }
-f()
-{
-  console.log("clicked");
-}
+
 
 booleanToYesOrNo(val)
 {
