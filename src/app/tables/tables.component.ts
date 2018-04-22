@@ -3,7 +3,7 @@ import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ConstantsModule } from '../constants.module';
 import { HttpClient } from '@angular/common/http';
 import { DomSanitizer, SafeHtml } from '@angular/platform-browser';
-
+import { ImageButtonRenderComponent } from './imagebutton.render.component';
 
 import * as _ from 'underscore';
 
@@ -16,8 +16,9 @@ export class TablesComponent implements OnInit {
   settings;
   data;
   name: string;
-  tableOptions = ["Trail Condition Reports", "Users", "Points of Interest"];
-  selectedTable = 'Users';
+  tableOptions = ConstantsModule.tableOptions;
+  selectedTable = this.tableOptions[0];
+
 
 
   constructor(public http : HttpClient, private domSanitizer: DomSanitizer) {
@@ -43,14 +44,14 @@ export class TablesComponent implements OnInit {
     }
     else if(this.selectedTable == "Trail Condition Reports")
     {
-      this.http.get(ConstantsModule.conditonURL + "/getActive").subscribe( res => {
+      this.http.get(ConstantsModule.conditonURL + "/getAllNoImage").subscribe( res => {
          console.log(_.keys(res[0]));
          this.buildConditionsTable(res);
        });
     }
     else if(this.selectedTable == "Points of Interest")
     {
-      this.http.get(ConstantsModule.poiURL + "/getActive").subscribe( res => {
+      this.http.get(ConstantsModule.poiURL + "/getAllNoImage").subscribe( res => {
          this.buildPOITable(res);
        });
     }
@@ -105,15 +106,20 @@ export class TablesComponent implements OnInit {
         this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {});
     }
   }
+  f(event)
+  {
+    console.log(event);
+  }
 
 
   buildConditionsTable(data)
   {
 
       this.data = data;
+       //this.source.add({id: 1,check1: true,check2: false,button: 'HI!'});
       for(var i = 0; i < data.length; i++)
       {
-        this.data[i].image =this.transform("<a id=\"this.data[i].id\"  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
+        this.data[i].button = this.selectedTable; //this is to tell the component what type of report it is
       }
 
     this.settings = {
@@ -146,10 +152,11 @@ export class TablesComponent implements OnInit {
       title: 'Lng Position',
       editable: false
     },
-    image: {
+    button: {
       title: "Image",
       editable: false,
-      type: 'html'
+      type: "custom",
+      renderComponent: ImageButtonRenderComponent,
     },
 
     active: {
@@ -365,7 +372,18 @@ yesOrNoToBoolean(val)
     },
     role: {
       title: 'Role',
-      editable: false
+      editable: false,
+      filter: {
+       type: 'list',
+       config: {
+         selectText: 'Select Role...',
+         list: [
+           { value: "ROLE_LIMITED", title:"Limited User" },
+           { value: "ROLE_ADMIN", title:"Admin User" }
+         ],
+       },
+
+    },
     }
   },
   actions: {

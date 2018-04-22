@@ -4,6 +4,7 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TablesComponent } from './tables/tables.component';
+import { ImageButtonRenderComponent } from './tables/imagebutton.render.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ConstantsModule } from './/constants.module';
@@ -15,7 +16,12 @@ import * as _ from 'underscore';
 @NgModule({
   declarations: [
     AppComponent,
-    TablesComponent
+    TablesComponent,
+    ImageButtonRenderComponent,
+
+  ],
+  entryComponents: [
+    ImageButtonRenderComponent
   ],
   imports: [
     BrowserModule,

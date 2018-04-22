@@ -12,4 +12,9 @@ export class ConstantsModule {
   public static conditonURL = "https://nwa-trails-webservice.herokuapp.com/trailcondition";
   public static poiURL = "https://nwa-trails-webservice.herokuapp.com/pointofinterest";
 
+  public static trailReports = "Trail Condition Reports";
+  public static poiReports = "Points of Interest";
+  public static users = "Users";
+
+  public static tableOptions = [ConstantsModule.trailReports, ConstantsModule.poiReports, ConstantsModule.users ];
 }

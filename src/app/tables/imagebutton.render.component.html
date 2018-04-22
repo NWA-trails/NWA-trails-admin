@@ -1,0 +1,8 @@
+ <button *ngIf="!showImg"  (click)="showImage()">View Image</button>
+ <div *ngIf="nullImg" >
+   <p>No Image avaliable<p>
+   <button (click)="returnToButton()">Return</button>
+ </div>
+ <div *ngIf="showImg">
+   <img id="camera-image" />
+ </div>
