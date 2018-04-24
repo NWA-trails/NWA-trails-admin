@@ -61,14 +61,20 @@ export class ImageButtonRenderComponent implements OnInit {
             this.nullImg = true;
           else{
             this.showImg = true;
-            this.reportImage = "data:image/jpeg;base64," +  res[0].image;
-            let cameraImageSelector = document.getElementById('camera-image');
-            cameraImageSelector.setAttribute('src', this.reportImage);
-
+			var s_image = this.byteArrayToString(res[0].image);
+            this.reportImage = "data:image/jpeg;base64," +  s_image;
           }
-
        });
   }
+  
+    byteArrayToString(array)
+   {
+  	var result = "";
+  	for(var i = 0; i < array.length; ++i){
+  		result+= (String.fromCharCode(array[i]));
+  	}
+  	return result;
+}
 
 
 }

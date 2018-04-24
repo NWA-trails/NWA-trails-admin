@@ -156,7 +156,7 @@ export class TablesComponent implements OnInit {
       title: "Image",
       editable: false,
       type: "custom",
-      renderComponent: ImageButtonRenderComponent,
+      renderComponent: ImageButtonRenderComponent
     },
 
     active: {
@@ -262,11 +262,12 @@ columns: {
     title: 'Lng Position',
     editable: false
   },
-  image: {
-    title: "Image",
-    editable: false,
-    type: 'html'
-  },
+  button: {
+      title: "Image",
+      editable: false,
+      type: "custom",
+      renderComponent: ImageButtonRenderComponent
+   },
 
   active: {
     valuePrepareFunction: (value) => this.booleanToYesOrNo(value),
