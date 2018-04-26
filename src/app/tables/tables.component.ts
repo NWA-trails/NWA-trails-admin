@@ -52,6 +52,7 @@ export class TablesComponent implements OnInit {
     else if(this.selectedTable == "Points of Interest")
     {
       this.http.get(ConstantsModule.poiURL + "/getAllNoImage").subscribe( res => {
+        console.log(res);
          this.buildPOITable(res);
        });
     }
@@ -111,9 +112,9 @@ export class TablesComponent implements OnInit {
       event.confirm.reject();
     }
 
-
-
   }
+
+
 
   update(record)
   {
@@ -171,10 +172,6 @@ export class TablesComponent implements OnInit {
         });
       }
   }
-  }
-  f(event)
-  {
-    console.log(event);
   }
 
 
@@ -485,11 +482,8 @@ yesOrNoToBoolean(val)
     columnTitle: '',
     position: 'right',
 
-    add: true,
+    add: false,
     edit: true
-  },
-  add: {
-    confirmCreate: true
   },
   edit:{
     confirmSave: true,
