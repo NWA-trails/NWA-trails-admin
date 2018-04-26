@@ -59,10 +59,13 @@ export class TablesComponent implements OnInit {
 
   onEditConfirm(event) {
     if (window.confirm('Are you sure you want to edit?')) {
-      event.newData['active'] = this.yesOrNoToBoolean(event.newData['active']) ;
+      console.log(event.newData);
 
-      //event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
+      event.newData['active'] = this.yesOrNoToBoolean(event.newData['active']) ;
+      event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
       event.newData['approved'] = this.yesOrNoToBoolean(event.newData['approved']) ;
+
+      console.log(event.newData);
       event.confirm.resolve(event.newData);
       this.update(event.newData);
     } else {
@@ -72,6 +75,7 @@ export class TablesComponent implements OnInit {
 
   update(record)
   {
+    console.log(record);
     if(this.selectedTable == "Trail Condition Reports")
     {
       if(record.active == true)
@@ -84,9 +88,13 @@ export class TablesComponent implements OnInit {
          });
 
       if(record.acknowledged == true)
-        this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {});
+        this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {
+          console.log(JSON.stringify(res));
+        });
       else
-        this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {});
+        this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {
+          console.log(JSON.stringify(res));
+        });
     }
     else if(this.selectedTable == "Points of Interest")
     {
@@ -101,9 +109,13 @@ export class TablesComponent implements OnInit {
          });
 
       if(record.approved == true)
-        this.http.put(ConstantsModule.poiURL + "/markApprovedById/" + record.id, {} ).subscribe( res => {});
+        this.http.put(ConstantsModule.poiURL + "/markApprovedById/" + record.id, {} ).subscribe( res => {
+          console.log(JSON.stringify(res));
+        });
       else
-        this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {});
+        this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {
+          console.log(JSON.stringify(res));
+        });
     }
   }
   f(event)
@@ -121,6 +133,10 @@ export class TablesComponent implements OnInit {
       {
         this.data[i].button = this.selectedTable; //this is to tell the component what type of report it is
         this.data[i].timestamp = new Date(this.data[i].timestamp);
+        // if(this.data[i].id == 163){
+        //   console.log("the data for 163");
+        //   console.log(this.data[i]);
+        // }
       }
 
     this.settings = {
@@ -210,10 +226,13 @@ export class TablesComponent implements OnInit {
 
   },
   actions: {
-    columnTitle: "",
+    columnTitle: '',
+    position: 'right',
+
     add: false,
     edit: true
   },
+
   edit:{
     confirmSave: true,
     mode: 'inline'
@@ -321,7 +340,9 @@ columns: {
 
 },
 actions: {
-  columnTitle: "",
+  columnTitle: '',
+  position: 'right',
+
   add: false,
   edit: true
 },
@@ -337,12 +358,12 @@ edit:{
 
 booleanToYesOrNo(val)
 {
-  return (val===true || val == 'Yes') ? 'Yes' : 'No';
+  return (val===true || val === 'Yes') ? 'Yes' : 'No';
 }
 
 yesOrNoToBoolean(val)
 {
-  return (val=='Yes' || val ===true) ? true : false;
+  return (val==='Yes' || val ===true) ? true : false;
 }
 
 

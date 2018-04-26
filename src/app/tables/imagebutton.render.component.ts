@@ -57,14 +57,24 @@ export class ImageButtonRenderComponent implements OnInit {
 
     this.http.get(url + "/getImageById/" + photoId).subscribe( res => {
           if(res[0] == null)
-            this.nullImg = true;
+            this.setImgeToNull();
           else{
-            this.showImg = true;
-            this.nullImg = false;
+           this.displayImage();
 			      var s_image = this.byteArrayToString(res[0].image);
             this.reportImage = "data:image/jpeg;base64," +  s_image;
           }
        });
+  }
+
+  setImgeToNull()
+  {
+    this.nullImg = true;
+  }
+
+  displayImage()
+  {
+    this.showImg = true;
+    this.nullImg = false;
   }
 
     byteArrayToString(array)
