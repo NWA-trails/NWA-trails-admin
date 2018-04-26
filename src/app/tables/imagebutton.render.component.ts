@@ -1,25 +1,38 @@
-import { Component, Input, OnInit } from '@angular/core';
+import { Component, Input, OnInit, Pipe,PipeTransform } from '@angular/core';
 import { ViewCell } from 'ng2-smart-table';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 import { ConstantsModule } from '../constants.module';
+import { DomSanitizer } from '@angular/platform-browser';
+import {BrowserModule} from '@angular/platform-browser'
+import { FormsModule } from '@angular/forms';
 
+
+@Pipe({ name: 'safeHtml'})
+export class SafeHtmlPipe implements PipeTransform  {
+  constructor(private sanitized: DomSanitizer) {}
+  transform(value) {
+    console.log(this.sanitized.bypassSecurityTrustResourceUrl(value))
+    return this.sanitized.bypassSecurityTrustResourceUrl(value);
+  }
+}
 
 @Component({
 
    templateUrl: './imagebutton.render.component.html',
 })
 export class ImageButtonRenderComponent implements OnInit {
-
+  name:string;
   public renderValue = {};
   public showImg: boolean;
   public reportImage;
   public nullImg: boolean;
 
+
   @Input() value: any;
   @Input() rowData: any;
 
-  constructor(public http: HttpClient) {
+  constructor(public http: HttpClient, public domSanitizer: DomSanitizer) {
       this.showImg = false;
    }
 

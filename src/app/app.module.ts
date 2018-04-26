@@ -4,12 +4,14 @@ import { NgModule } from '@angular/core';
 
 import { AppComponent } from './app.component';
 import { TablesComponent } from './tables/tables.component';
-import { ImageButtonRenderComponent } from './tables/imagebutton.render.component';
+import { ImageButtonRenderComponent, SafeHtmlPipe } from './tables/imagebutton.render.component';
 import { AppRoutingModule } from './/app-routing.module';
 import { Ng2SmartTableModule } from 'ng2-smart-table';
 import { ConstantsModule } from './/constants.module';
 import { HttpClientModule } from '@angular/common/http';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
+import { DomSanitizer } from '@angular/platform-browser'
+
 import * as _ from 'underscore';
 
 
@@ -18,7 +20,7 @@ import * as _ from 'underscore';
     AppComponent,
     TablesComponent,
     ImageButtonRenderComponent,
-
+    SafeHtmlPipe,
   ],
   entryComponents: [
     ImageButtonRenderComponent

@@ -3,7 +3,7 @@
    <p>No Image avaliable<p>
    <button (click)="returnToButton()">Return</button>
  </div>
- <div *ngIf="showImg">
-   <img [src] = "reportImage" style="width:200px;" />
+ <div *ngIf="showImg" >
+   <img [src] ="reportImage | safeHtml" style="width:200px;" />
    <button (click)="returnToButton()">Return</button>
  </div>
