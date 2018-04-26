@@ -59,13 +59,11 @@ export class TablesComponent implements OnInit {
 
   onEditConfirm(event) {
     if (window.confirm('Are you sure you want to edit?')) {
-      console.log(event.newData);
 
       event.newData['active'] = this.yesOrNoToBoolean(event.newData['active']) ;
       event.newData['acknowledged'] = this.yesOrNoToBoolean(event.newData['acknowledged']) ;
       event.newData['approved'] = this.yesOrNoToBoolean(event.newData['approved']) ;
 
-      console.log(event.newData);
       event.confirm.resolve(event.newData);
       this.update(event.newData);
     } else {
@@ -73,50 +71,106 @@ export class TablesComponent implements OnInit {
     }
   }
 
+  onDeleteConfirm(event)
+  {
+    if(window.confirm('Are you sure you want to delete?'))
+    {
+      var record = event.data;
+       console.log(record.id);
+       event.confirm.resolve(event.data);
+       var url = "";
+       switch(this.selectedTable)
+       {
+         case ConstantsModule.trailReports:
+         {
+           url = ConstantsModule.conditonURL;
+           break;
+         }
+         case ConstantsModule.poiReports :
+         {
+           url = ConstantsModule.poiURL;
+           break;
+         }
+         case ConstantsModule.users:
+         {
+           url = ConstantsModule.userURL;
+           break;
+         }
+         default:
+         {
+           alert("Error deleting row");
+         }
+       }
+       this.http.put(url + "/deleteById/" + record.id, {} ).subscribe( res => {
+          console.log(JSON.stringify(res));
+        });
+        event.confirm.resolve(event.data);
+    }
+    else
+    {
+      event.confirm.reject();
+    }
+
+
+
+  }
+
   update(record)
   {
-    console.log(record);
-    if(this.selectedTable == "Trail Condition Reports")
-    {
-      if(record.active == true)
-        this.http.put(ConstantsModule.conditonURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
-           console.log(JSON.stringify(res));
-         });
-      else
-        this.http.put(ConstantsModule.conditonURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
-           console.log(JSON.stringify(res));
-         });
+    switch(this.selectedTable){
+      case ConstantsModule.trailReports:
+      {
+        if(record.active == true)
+          this.http.put(ConstantsModule.conditonURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
+             console.log(JSON.stringify(res));
+           });
+        else
+          this.http.put(ConstantsModule.conditonURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
+             console.log(JSON.stringify(res));
+           });
 
-      if(record.acknowledged == true)
-        this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {
-          console.log(JSON.stringify(res));
-        });
-      else
-        this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {
-          console.log(JSON.stringify(res));
-        });
-    }
-    else if(this.selectedTable == "Points of Interest")
-    {
-      console.log(record);
-      if(record.active == true)
-        this.http.put(ConstantsModule.poiURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
-           console.log(JSON.stringify(res));
-         });
-      else
-        this.http.put(ConstantsModule.poiURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
-           console.log(JSON.stringify(res));
-         });
+        if(record.acknowledged == true)
+          this.http.put(ConstantsModule.conditonURL + "/markAcknowledgedById/" + record.id, {} ).subscribe( res => {
+            console.log(JSON.stringify(res));
+          });
+        else
+          this.http.put(ConstantsModule.conditonURL + "/markUnacknowledgedById/" + record.id, {} ).subscribe( res => {
+            console.log(JSON.stringify(res));
+          });
+      }
+      case ConstantsModule.poiReports:
+      {
+        console.log(record);
+        if(record.active == true)
+          this.http.put(ConstantsModule.poiURL + "/markActiveById/" + record.id, {} ).subscribe( res => {
+             console.log(JSON.stringify(res));
+           });
+        else
+          this.http.put(ConstantsModule.poiURL + "/markInactiveById/" + record.id, {} ).subscribe( res => {
+             console.log(JSON.stringify(res));
+           });
 
-      if(record.approved == true)
-        this.http.put(ConstantsModule.poiURL + "/markApprovedById/" + record.id, {} ).subscribe( res => {
+        if(record.approved == true)
+          this.http.put(ConstantsModule.poiURL + "/markApprovedById/" + record.id, {} ).subscribe( res => {
+            console.log(JSON.stringify(res));
+          });
+        else
+          this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {
+            console.log(JSON.stringify(res));
+          });
+      }
+      case ConstantsModule.users:
+      {
+        if(record.role == ConstantsModule.adminRole)
+          this.http.put(ConstantsModule.userURL + "/makeAdminById/" + record.id, {} ).subscribe( res => {
+            console.log(JSON.stringify(res));
+          });
+        else if(record.role == ConstantsModule.limitedRole)
+        this.http.put(ConstantsModule.poiURL + "/revokeAdminById/" + record.id, {} ).subscribe( res => {
           console.log(JSON.stringify(res));
         });
-      else
-        this.http.put(ConstantsModule.poiURL + "/markUnapprovedById/" + record.id, {} ).subscribe( res => {
-          console.log(JSON.stringify(res));
-        });
-    }
+      }
+  }
   }
   f(event)
   {
@@ -237,6 +291,9 @@ export class TablesComponent implements OnInit {
     confirmSave: true,
     mode: 'inline'
 
+  },
+  delete:{
+    confirmDelete:true,
   }
 
  };
@@ -350,6 +407,9 @@ edit:{
   confirmSave: true,
   mode: 'inline'
 
+},
+delete:{
+  confirmDelete:true,
 }
 
 };
@@ -396,24 +456,48 @@ yesOrNoToBoolean(val)
     },
     role: {
       title: 'Role',
-      editable: false,
+      editable: true,
+      editor: {
+        type: 'list',
+        config: {
+          selectText: 'Select Role...',
+          list: [
+            { value: ConstantsModule.limitedRole, title:"Limited User" },
+            { value: ConstantsModule.adminRole, title:"Admin User" }
+          ],
+        },
+      },
       filter: {
        type: 'list',
        config: {
          selectText: 'Select Role...',
          list: [
-           { value: "ROLE_LIMITED", title:"Limited User" },
-           { value: "ROLE_ADMIN", title:"Admin User" }
+           { value: ConstantsModule.limitedRole, title:"Limited User" },
+           { value: ConstantsModule.adminRole, title:"Admin User" }
          ],
        },
 
     },
     }
   },
+
   actions: {
-    columnTitle: "",
-    add: false,
-    edit: false
+    columnTitle: '',
+    position: 'right',
+
+    add: true,
+    edit: true
+  },
+  add: {
+    confirmCreate: true
+  },
+  edit:{
+    confirmSave: true,
+    mode: 'inline'
+
+  },
+  delete:{
+    confirmDelete:true,
   }
 };
 

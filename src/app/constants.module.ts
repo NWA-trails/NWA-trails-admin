@@ -16,5 +16,9 @@ export class ConstantsModule {
   public static poiReports = "Points of Interest";
   public static users = "Users";
 
+  public static limitedRole = "ROLE_LIMITED";
+  public static adminRole = "ROLE_ADMIN";
+
   public static tableOptions = [ConstantsModule.trailReports, ConstantsModule.poiReports, ConstantsModule.users ];
+  public static userOptions = [ConstantsModule.limitedRole, ConstantsModule.adminRole];
 }
