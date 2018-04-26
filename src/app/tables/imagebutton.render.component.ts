@@ -61,7 +61,7 @@ export class ImageButtonRenderComponent implements OnInit {
           else{
             this.showImg = true;
             this.nullImg = false;
-			var s_image = this.byteArrayToString(res[0].image);
+			      var s_image = this.byteArrayToString(res[0].image);
             this.reportImage = "data:image/jpeg;base64," +  s_image;
           }
        });

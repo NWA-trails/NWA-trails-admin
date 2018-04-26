@@ -120,6 +120,7 @@ export class TablesComponent implements OnInit {
       for(var i = 0; i < data.length; i++)
       {
         this.data[i].button = this.selectedTable; //this is to tell the component what type of report it is
+        this.data[i].timestamp = new Date(this.data[i].timestamp);
       }
 
     this.settings = {
@@ -229,7 +230,8 @@ buildPOITable(data)
     this.data = data;
     for(var i = 0; i < data.length; i++)
     {
-      this.data[i].image =this.transform("<a id=\"this.data[i].id\"  (click)=\"f()\" onmouseover=\"\" style=\"cursor: pointer;\">View image</a>");
+      this.data[i].button = this.selectedTable; //this is to tell the component what type of report it is
+      this.data[i].timestamp = new Date(this.data[i].timestamp);
     }
 
   this.settings = {
